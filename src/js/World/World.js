@@ -15,5 +15,10 @@ export default class World {
 		if (this.particles) this.particles.update()
 	}
 
+  onBeat(audio) {
+    console.log('beat')
+    if (this.particles) this.particles.onBeat(audio)
+  }
+
 	destroy() {}
 }

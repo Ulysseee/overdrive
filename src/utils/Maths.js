@@ -11,4 +11,6 @@ const lerp = (a, b, n) => (1 - n) * a + n * b
 
 const clamp = (num, min, max) => (num <= min ? min : num >= max ? max : num)
 
-export { map, lerp, clamp }
+const average = (arr) => (arr.reduce((a, b) => a + b, 0) / arr.length)
+
+export { map, lerp, clamp, average }

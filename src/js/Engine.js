@@ -5,6 +5,8 @@ import brightPassFragment from '@shaders/post/brightPass.frag'
 import blurFragment from '@shaders/post/blur.frag'
 import compositeFragment from '@shaders/post/composite.frag'
 
+import { average } from '@utils/Maths';
+
 export default class Engine {
 	constructor() {
 		this.Experience = new Experience()
@@ -19,8 +21,20 @@ export default class Engine {
     this.createScene()
     this.initPasses()
     this.resize()
-    if(this.debug) this.setControls()
+    if(this.debug) this.setDebug()
 	}
+
+  setDebug() {
+    const f = this.debug.gui.addFolder({
+      title: 'Bloom',
+      expanded: true
+    })
+		f.addInput(this.compositePass, 'enabled');
+		f.addInput(this.compositePass.uniforms.uBloomStrength, 'value', { label: "uBloomStrength", step: 0.001, min: 0, max: 1 });
+		f.addInput(this.brightPass.uniforms.uThreshold, 'value', { label:"uThreshold", step: 0.001, min: 0, max: 1 });
+
+    this.setControls()
+  }
 
 	createRenderer() {
     this.renderer = new Renderer();
@@ -59,7 +73,7 @@ export default class Engine {
 
   initPasses() {
     // Add Bright pass - filter the scene to only the bright parts we want to blur
-    const brightPass = this.postBloom.addPass({
+    this.brightPass = this.postBloom.addPass({
         fragment: brightPassFragment,
         uniforms: {
             uThreshold: { value: 0.8 },
@@ -91,7 +105,7 @@ export default class Engine {
         uniforms: {
             uResolution: this.resolution,
             tBloom: this.postBloom.uniform,
-            uBloomStrength: { value: 1.0 },
+            uBloomStrength: { value: 0 },
         },
     });
   }
@@ -111,6 +125,11 @@ export default class Engine {
       aspect: this.gl.canvas.width / this.gl.canvas.height
     })
 	}
+
+  onBeat(audio) {
+    const avr = average(audio.values)
+    this.compositePass.uniforms.uBloomStrength.value = avr
+  }
 
 	update() {
     this.controls.update()

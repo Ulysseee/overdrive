@@ -25,3 +25,25 @@ canvas {
 	outline: none;
 	z-index: 0;
 }
+
+.analysis {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+  left: unset;
+  top: unset;
+	outline: none;
+	z-index: 9999;
+}
+
+#audio {
+  position: fixed;
+	bottom: 10px;
+	left: 10px;
+	outline: none;
+	z-index: 1;
+}
+
+.tp-dfwv {
+  min-width: 300px;
+}
