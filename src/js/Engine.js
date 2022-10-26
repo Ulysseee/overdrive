@@ -40,6 +40,7 @@ export default class Engine {
 	createRenderer() {
     this.renderer = new Renderer();
     this.gl = this.renderer.gl;
+    this.gl.canvas.classList.add('webgl')
     document.querySelector('#app').appendChild(this.gl.canvas);
  	}
 

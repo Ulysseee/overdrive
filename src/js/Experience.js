@@ -36,14 +36,14 @@ export default class Experience {
 
   bindUi() {
     this._ui = {
-      audio: document.querySelector('#audio'),
+      reveal: document.querySelector('#reveal'),
       play: document.querySelector('#play'),
     }
   } 
 
   bindEvents() {
     this.sizes.on('resize', () => this.resize())
-    this._ui.audio.addEventListener('click', this.startAudio.bind(this)) 
+    this._ui.reveal.addEventListener('click', this.startAudio.bind(this)) 
     this._ui.play.addEventListener('click', this.handleAudio.bind(this)) 
   }
 
@@ -52,14 +52,16 @@ export default class Experience {
 	}
 
   startAudio() {
-    Object.values(this._ui).forEach(el => el.classList.toggle('dft-hide'));
-    this.audio = new Audio()
-    this.audio.start( {
-      onBeat: this.onBeat.bind(this),
-      live: false,
-      src: '../../BeeGeesX50Cent.mp3',
-    })
-    this.data.play = true
+    setTimeout(() => {      
+      this._ui.play.classList.toggle('dft-hide');
+      this.audio = new Audio()
+      this.audio.start( {
+        onBeat: this.onBeat.bind(this),
+        live: false,
+        src: '../../BeeGeesX50Cent.mp3',
+      })
+      this.data.play = true
+    }, 400);
   }
 
   handleAudio() {

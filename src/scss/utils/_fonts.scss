@@ -1,1 +1,21 @@
-@import '@scss/utils/_mixins';
+@font-face {
+  font-family: 'Wriggle';
+  src: url('/fonts/Wriggle-Regular.eot');
+  src: url('/fonts/Wriggle-Regular.eot?#iefix') format('embedded-opentype'),
+      url('/fonts/Wriggle-Regular.woff2') format('woff2'),
+      url('/fonts/Wriggle-Regular.woff') format('woff'),
+      url('/fonts/Wriggle-Regular.ttf') format('truetype'),
+      url('/fonts/Wriggle-Regular.svg#Wriggle-Regular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+	font-family: 'Nineties';
+	font-weight: 300;
+	font-style: normal;
+	src: url('/fonts/Nineties.woff') format('woff'),
+		url('/fonts/Nineties.woff2') format('woff2');
+}
+

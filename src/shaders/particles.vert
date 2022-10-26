@@ -13,9 +13,10 @@ attribute float random;
 
 varying vec3 vPos;
 varying vec3 vColor;
-varying float vNoise;
 varying float vRandom;
 varying float vCenter;
+varying float vNoise;
+varying float vFrequency;
 
 #include perlin.glsl;
 #include simplex.glsl;
@@ -36,6 +37,8 @@ void main() {
 
 
   vCenter = center;
+  vFrequency = uFrequency;
+  vNoise = noise;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4( newPos, 1.0 );;
   // gl_PointSize = 4. + sin(uTime + noise + random);
