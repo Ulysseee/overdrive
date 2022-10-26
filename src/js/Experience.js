@@ -18,20 +18,20 @@ export default class Experience {
 
 		this.config = config
 
+		this.bindData()
+    this.bindUi()
 		this.setDebug()
 		this.sizes = new Sizes()
 		this.time = new Time()
 		this.engine = new Engine()
 		this.world = new World()
 
-		this.bindData()
-    this.bindUi()
     this.bindEvents()
 		this.update()
 	}
 
   bindData() {
-    this._data = { beat: false, play: true}
+    this.data = { beat: false, play: false}
   }
 
   bindUi() {
@@ -59,30 +59,30 @@ export default class Experience {
       live: false,
       src: '../../BeeGeesX50Cent.mp3',
     })
+    this.data.play = true
   }
 
   handleAudio() {
-    // this.audio.pause()
-    if(this._data.play) {
-      this._data.play = false
+    if(this.data.play) {
+      this.data.play = false
       this.audio.pause()
+      this.world.pause()
     } else {
-      this._data.play = true
+      this.data.play = true
       this.audio.play()
     }
-    console.log(this._data.play)
   }
 
   onBeat() {
-    this.beat = true
+    this.data.beat = true
 		if (this.engine) this.engine.onBeat(this.audio)
     if (this.world) this.world.onBeat(this.audio)
-    this.beat = false
+    this.data.beat = false
   }
 
 	update() {
-    if (this.audio && this._data.play) this.audio.update()
-		if (this.world) this.world.update()
+    if (this.audio && this.data.play) this.audio.update()
+		if (this.world) this.world.update(this.data.play)
 		if (this.engine) this.engine.update()
 		if (this.debug) this.debug.stats.update()
 
@@ -96,6 +96,4 @@ export default class Experience {
 	resize() {
 		this.engine.resize()
 	}
-
-	destroy() {}
 }

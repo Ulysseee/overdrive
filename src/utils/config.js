@@ -1,6 +1,6 @@
 const config = {
 	controls: true,
-	gui: true,
+	gui: window.location.hash === '#debug',
 	credit: [
 		'%c %c  Site by Ulysse Gravier  %c %c  https://ulyssegravier.fr/  %c ',
 		'background: #fe3301; border: 1px solid #fe3301; padding:5px 0; margin:3px 0 10px 0;',

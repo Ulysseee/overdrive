@@ -11,9 +11,13 @@ export default class World {
     this.particles = new Particles()
 	}
 
-	update() {
-		if (this.particles) this.particles.update()
+	update(isPlaying) {
+		if (this.particles) this.particles.update(isPlaying)
 	}
+  
+  pause() {
+    if (this.particles) this.particles.pause()
+  }
 
   onBeat(audio) {
     console.log('beat')

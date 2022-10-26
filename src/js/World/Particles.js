@@ -1,10 +1,11 @@
-import { Geometry, Program, Mesh, Vec2 } from 'ogl';
+import gsap, { Power1 } from 'gsap';
+import { Geometry, Program, Mesh } from 'ogl';
 import Experience from '../Experience.js'
 
 import particleFrag from '@shaders/particles.frag'
 import particleVert from '@shaders/particles.vert'
 
-import { average } from '@utils/Maths.js';
+import { clamp, lerp, average } from '@utils/Maths.js';
 
 export default class Particles {
 	constructor() {
@@ -13,8 +14,9 @@ export default class Particles {
 		this.scene = this.Experience.engine.scene
     this.time = this.Experience.time
     this.debug = this.Experience.debug
+    this.isPlaying = this.Experience.data.play
 
-    this._nbParticles = 10000
+    this._nbParticles = 40000
 
 		this.bindData()
 		this.populateAttributes()
@@ -26,7 +28,12 @@ export default class Particles {
 		this._data = {
 			position: new Float32Array(this._nbParticles * 3),
 			color: new Float32Array(this._nbParticles * 3),
-			random: new Float32Array(this._nbParticles * 1)
+			random: new Float32Array(this._nbParticles * 1),
+
+      dftScale: 1,
+      dftFrequency: 0.05,
+      // dftFrequency: 0.15,
+      dftAmp: 1
 		}
 	}
 
@@ -36,22 +43,18 @@ export default class Particles {
 				title: 'Particles',
 				expanded: true
 			})
+			f.addInput(this, '_nbParticles', { label: "Particles number", step: 1, min: 0, max: 80000 })    
 			f.addInput(this.particlesMat.uniforms.uFrequency, 'value', { label: "Frequency", step: 0.01, min: 0, max: 1 });
-			f.addInput(this.particlesMat.uniforms.uAmp, 'value', { label: "Amplitude", step: 1, min: 0, max: 50 });
+			f.addInput(this.particlesMat.uniforms.uAmp, 'value', { label: "Amplitude", step: 0.1, min: 0, max: 50 });
 			f.addInput(this.particlesMat.uniforms.uScale, 'value', { label: "Scale", step: 0.1, min: 0, max: 10 });
     }
   }
 
 	populateAttributes() {
 		for (let i = 0; i < this._nbParticles; i++) {
-			// const x = Math.random() * 100 - 50
-			// const y = Math.random() * 100 - 50
-      // const x = (Math.random() * 100 - 50) * Math.cos(Math.PI + i * 0.1)
-			// const y = (Math.random() * 100 - 50) * Math.sin(Math.PI + i * 0.1)
-			// const z = Math.random() * 4 - 2
       const angle = Math.random() * Math.PI * 2 // Random angle
-      // const radius = 15 + Math.random() * 35    // Random radius
-      const radius = Math.random() * 50    // Random radius
+      // const radius = 15 + Math.random() * 35 // Random radius
+      const radius = Math.random() * 60         // Random radius
       const x = Math.cos(angle) * radius        // Get the x position using cosinus
       const y = Math.sin(angle) * radius        // Get the z position using sinus
 
@@ -66,7 +69,7 @@ export default class Particles {
 	}
 
 	createParticles() {
-		const geometry = new Geometry(this.gl, {
+		this.geometry = new Geometry(this.gl, {
         position: { size: 3, data: this._data.position },
         color: { size: 3, data: this._data.color },
         random: { size: 1, data: this._data.random },
@@ -76,32 +79,59 @@ export default class Particles {
       vertex: particleVert,
       fragment: particleFrag,
       uniforms: {
-          uTime: { type: 'float', value: this.time.delta * 0.001 },
-          uFrequency: { value: 0.05 },
-          uAmp: { value: 1 },
-          uScale: { value: 1 }
+          uTime: { type: 'f', value: this.time.delta * 0.001 },
+          uFrequency: { type: 'f', value: this._data.dftFrequency },
+          uAmp: { type: 'f', value: this._data.dftAmp },
+          uScale: { type: 'f', value: this._data.dftScale }
       },
       transparent: true,
-      // depthTest: false,
     });
 
-    this.particles = new Mesh(this.gl, { mode: this.gl.POINTS, geometry, program: this.particlesMat });
+    this.particles = new Mesh(this.gl, { mode: this.gl.POINTS, geometry: this.geometry, program: this.particlesMat });
+    this.particles.rotation.x -= Math.PI/3
     this.particles.setParent(this.scene);
 	}
 
   onBeat(audio) {
     const avr = average(audio.values)
-    console.log('AVR', avr)
+    console.log(audio.volume)
     // this.particlesMat.uniforms.uScale.value = audio.values[2] * 5
-    this.particlesMat.uniforms.uScale.value = avr * 10
-    this.particlesMat.uniforms.uAmp.value = audio.volume
-    // gsap.to(this.particlesMat.uniforms.uScale, { value: average })
+    this.particlesMat.uniforms.uScale.value = avr * 5
+    if (audio.values[2] > 1) this.particlesMat.uniforms.uFrequency.value = clamp(audio.values[2] / 10, this._data.dftFrequency, 0.1)
+    // this.particlesMat.uniforms.uFrequency.value = audio.values[5] / 10
+    this.particlesMat.uniforms.uAmp.value = clamp(audio.volume, this._data.dftAmp, 6)
   }
 
-	update() {
-    this.particles.rotation.z -= this.time.delta * 0.0001;
-    // this.particles.rotation.x += time;
+  pause() {
+    gsap.to(this.particles.rotation, { duration: 0.5, z: this.particles.rotation.z - 0.175, ease: Power1.easeOut })
+  }
 
-		this.particlesMat.uniforms.uTime.value += this.time.delta * 0.001
+	update(isPlaying) {
+    this.particlesMat.uniforms.uTime.value += this.time.delta * 0.001
+
+    if (isPlaying) {
+      this.particles.rotation.z -= this.time.delta * 0.0005
+      // this.particles.rotation.x -= Math.cos(this.time.delta * 0.0005)
+      // this.particles.rotation.x -= Math.sin(this.time.delta * 0.0005)
+    }
+
+    // UNIFORMS
+    this.particlesMat.uniforms.uFrequency.value = lerp(
+      this.particlesMat.uniforms.uFrequency.value,
+      this._data.dftFrequency,
+      0.1
+    )
+    this.particlesMat.uniforms.uScale.value = lerp(
+      this.particlesMat.uniforms.uScale.value,
+      this._data.dftScale,
+      0.05
+    )
+    this.particlesMat.uniforms.uAmp.value = lerp(
+      this.particlesMat.uniforms.uAmp.value,
+      this._data.dftAmp,
+      0.04
+    )
+    // console.log(this.particlesMat.uniforms.uAmp.value)
+    // this.particlesMat.uniforms.uScale.value -= this.time.delta * 0.01
 	}
 }

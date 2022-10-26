@@ -5,7 +5,7 @@ import brightPassFragment from '@shaders/post/brightPass.frag'
 import blurFragment from '@shaders/post/blur.frag'
 import compositeFragment from '@shaders/post/composite.frag'
 
-import { average } from '@utils/Maths';
+import { lerp, clamp, average } from '@utils/Maths';
 
 export default class Engine {
 	constructor() {
@@ -14,6 +14,7 @@ export default class Engine {
 		this.sizes = this.Experience.sizes
     this.debug = this.Experience.debug
     this.compositePass = null
+    this.dftStrength = 0
 
     this.createRenderer()
     this.createComposer()
@@ -56,7 +57,7 @@ export default class Engine {
   createCamera () {
     this.camera = new Camera(this.gl, { fov: 50, near: 0.1, far: 500 })
     this.camera.position.x = 0
-    this.camera.position.y = 0
+    this.camera.position.y = -4
     this.camera.position.z = 120
   }
 
@@ -132,8 +133,14 @@ export default class Engine {
   }
 
 	update() {
-    this.controls.update()
-    
+    if (this.debug) this.controls.update()
+
+    this.compositePass.uniforms.uBloomStrength.value = lerp(
+      clamp(this.compositePass.uniforms.uBloomStrength.value, 0.01, 1),
+      this.dftStrength,
+      0.05
+    )
+
     // Disable compositePass pass, so this post will just render the scene for now
     this.compositePass.enabled = false;
     // `targetOnly` prevents post from rendering to the canvas

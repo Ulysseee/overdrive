@@ -5,6 +5,7 @@ varying float vNoise;
 varying vec3 vColor;
 varying vec3 vPos;
 varying float vRandom;
+varying float vCenter;
 
 #include perlin.glsl;
 
@@ -27,5 +28,6 @@ void main() {
   }
 
   gl_FragColor = vec4(vNoise,vNoise,vNoise, 1.);
+  // gl_FragColor = vec4(vec3(vCenter), 1.);
   // gl_FragColor = vec4(color, 1.);
 }

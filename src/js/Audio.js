@@ -1,3 +1,5 @@
+import Experience from "./Experience"
+
 // import {stage, dom} from 'mnf'
 const H_CANVAS = 200
 const MARGIN = 5
@@ -10,6 +12,8 @@ const SPACE_BAR = 1
 class Audio {
 
 	constructor() {
+    this.Experience = new Experience()
+    this.debug = this.Experience.debug
 		if (window.AudioContext) {
 			this.context = new AudioContext()
 		} else if (window.webkitAudioContext) {
@@ -27,7 +31,7 @@ class Audio {
 		this.audioIndexStep = .06
 		this.isContrained = false
 		this.values = []
-		this.showPreview = true
+		this.showPreview = this.debug ? true : false
 		this.easingAudioRangeValue = .48
 		for( let i = 0, n = this.audioRange; i < n; i++ ) {
 			this.values[ i ] = 0
@@ -57,7 +61,17 @@ class Audio {
 		this.beatCutOff = 0
 		this.beatTime = 0
 
+    if(this.debug) this.setDebug()
 	}
+
+  setDebug() {
+    const f = this.debug.gui.addFolder({
+      title: 'Audio preview',
+      expanded: true
+    })
+		f.addInput(this, 'showPreview');
+  }
+
 
 	start({ onLoad = null, onBeat = null, live = true, analyze = true, debug = false, playlist = ["audio/galvanize.mp3"], shutup = false, src = null } = {}) {
 
