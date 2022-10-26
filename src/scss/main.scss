@@ -36,14 +36,22 @@ canvas {
 	z-index: 9999;
 }
 
-#audio {
+.controls {
   position: fixed;
 	bottom: 10px;
 	left: 10px;
 	outline: none;
 	z-index: 1;
+
+  &__cta {
+    opacity: 1;
+  }
 }
 
-.tp-dfwv {
-  min-width: 300px;
+
+.dft-hide {
+  opacity: 0;
+  // visibility: hidden;
+  display: none;
+  transition: opacity ease-out 400ms;
 }

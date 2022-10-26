@@ -33,5 +33,5 @@ void main() {
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4( newPos, 1.0 );;
   // gl_PointSize = 4. + sin(uTime + noise + random);
-  gl_PointSize = 10. * uScale;
+  gl_PointSize = 1. * uScale;
 }

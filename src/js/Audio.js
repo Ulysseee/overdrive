@@ -293,6 +293,16 @@ class Audio {
 		// 	midi.xl.add(this,'BEAT_HOLD_TIME',14,false).minMax(0,1000)
 		// }
 	}
+
+  play() {
+    this.audio.play()
+    this.context.resume()
+  }
+  
+  pause() {
+    this.audio.play()
+    this.context.suspend()
+  }
 }
 
 export default Audio

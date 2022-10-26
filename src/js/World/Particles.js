@@ -51,7 +51,7 @@ export default class Particles {
 			// const z = Math.random() * 4 - 2
       const angle = Math.random() * Math.PI * 2 // Random angle
       // const radius = 15 + Math.random() * 35    // Random radius
-      const radius = Math.random() * 45    // Random radius
+      const radius = Math.random() * 50    // Random radius
       const x = Math.cos(angle) * radius        // Get the x position using cosinus
       const y = Math.sin(angle) * radius        // Get the z position using sinus
 
@@ -91,8 +91,9 @@ export default class Particles {
 
   onBeat(audio) {
     const avr = average(audio.values)
-    console.log(audio.values, avr)
-    this.particlesMat.uniforms.uScale.value = avr
+    console.log('AVR', avr)
+    // this.particlesMat.uniforms.uScale.value = audio.values[2] * 5
+    this.particlesMat.uniforms.uScale.value = avr * 10
     this.particlesMat.uniforms.uAmp.value = audio.volume
     // gsap.to(this.particlesMat.uniforms.uScale, { value: average })
   }
@@ -100,6 +101,7 @@ export default class Particles {
 	update() {
     this.particles.rotation.z -= this.time.delta * 0.0001;
     // this.particles.rotation.x += time;
+
 		this.particlesMat.uniforms.uTime.value += this.time.delta * 0.001
 	}
 }
