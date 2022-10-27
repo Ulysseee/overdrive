@@ -65,7 +65,7 @@ export default class Experience {
       this.audio.start( {
         onBeat: this.onBeat.bind(this),
         live: false,
-        src: '../../BeeGeesX50Cent.mp3',
+        src: '/BeeGeesX50Cent.mp3',
       })
       this.data.play = true
     }, 400);
@@ -98,8 +98,6 @@ export default class Experience {
 		if (this.world) this.world.update(this.data.play)
 		if (this.engine) this.engine.update()
 		if (this.debug) this.debug.stats.update()
-
-    // if (this.audio) console.log(this.audio.volume)
 
 		window.requestAnimationFrame(() => {
 			this.update()
