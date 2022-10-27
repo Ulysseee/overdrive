@@ -19,8 +19,8 @@ export default class extends Animation {
 	}
 
   bindEvents() {
-    this.element.addEventListener('mouseenter', this.enter.bind(this), true)
-    this.element.addEventListener('mouseleave', this.leave.bind(this), true)
+    this.element.addEventListener('mouseenter', this.enter.bind(this))
+    this.element.addEventListener('mouseleave', this.leave.bind(this))
     this.element.addEventListener('click', this.reveal.bind(this))
   }
 
@@ -34,7 +34,7 @@ export default class extends Animation {
 			tagName: 'span'
 		})
 		gsap.set([this.splitedMainHeader.chars, this.splitedSubHeader.chars], {
-			y: '110%',
+			y: '130%',
 			rotate: 40,
 		})
     gsap.set(this.splitedMainHeader.chars, {
@@ -57,12 +57,11 @@ export default class extends Animation {
 	}
 
   enter() {
-    gsap.killTweensOf(this.splitedMainHeader.chars)
-		gsap.killTweensOf(this.splitedSubHeader.chars)
+    this.killTweans()
     
     this.enterTl = gsap.timeline()
       .to(this.splitedMainHeader.chars, {
-        y: '-110%',
+        y: '-130%',
         rotate: -40,
         duration: 0.4,
         stagger: { from: "start", each: 0.01 },
@@ -78,12 +77,11 @@ export default class extends Animation {
   }
 
   leave() {
-    gsap.killTweensOf(this.splitedMainHeader.chars)
-		gsap.killTweensOf(this.splitedSubHeader.chars)
+    this.killTweans()
 
     this.leavetl = gsap.timeline()
       .to(this.splitedSubHeader.chars, {
-        y: '110%',
+        y: '130%',
         rotate: 40,
         duration: 0.4,
         stagger: { from: "start", each: 0.01 },
@@ -100,8 +98,6 @@ export default class extends Animation {
   }
 
 	reveal() {
-    console.log(this, 'reveal')
-    
     gsap.to(document.querySelector('.webgl'), {
       opacity: 1,
       duration: 0.4,
@@ -115,14 +111,24 @@ export default class extends Animation {
 			.to(this.splitedSubHeader.words, {
 				y: '-115%',
 				duration: 0.2,
+        stagger: { from: "start", each: 0.03 },
 				ease: Circ.easeIn
 			})
 	}
 
+  killTweans() {
+    if(gsap.isTweening(this.splitedMainHeader.chars) || gsap.isTweening(this.splitedSubHeader.chars) || gsap.isTweening(this.splitedMainHeader.words) || gsap.isTweening(this.splitedSubHeader.words)) {
+      gsap.killTweensOf(this.splitedMainHeader.chars)
+      gsap.killTweensOf(this.splitedMainHeader.words)
+      gsap.killTweensOf(this.splitedSubHeader.chars)
+      gsap.killTweensOf(this.splitedSubHeader.words)
+    }
+  }
+
   destroy() {
-    this.element.removeEventListener('mouseenter', this.enter, true)
-    this.element.removeEventListener('mouseleave', this.leave, true)
-    this.element.removeEventListener('click', this.reveal, true)
+    this.element.removeEventListener('mouseenter', this.enter)
+    this.element.removeEventListener('mouseleave', this.leave)
+    this.element.removeEventListener('click', this.reveal)
     this.element.remove()
     this.leavetl = null
     this.enterTl = null

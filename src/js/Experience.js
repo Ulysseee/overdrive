@@ -1,3 +1,4 @@
+import gsap, { Circ } from 'gsap'
 
 import config from '@utils/config'
 import Debug from '@utils/Debug'
@@ -38,6 +39,8 @@ export default class Experience {
     this._ui = {
       reveal: document.querySelector('#reveal'),
       play: document.querySelector('#play'),
+      resume: document.querySelector('.controls__cta__up'),
+      suspend: document.querySelector('.controls__cta__down'),
     }
   } 
 
@@ -52,8 +55,12 @@ export default class Experience {
 	}
 
   startAudio() {
+    gsap.to(this._ui.resume, { y: '110%' } )
+    gsap.to(this._ui.suspend, { y: 0 } )
+    
     setTimeout(() => {      
       this._ui.play.classList.toggle('dft-hide');
+      gsap.to(this._ui.play, { opacity: 1, duration: 0.5 } )
       this.audio = new Audio()
       this.audio.start( {
         onBeat: this.onBeat.bind(this),
@@ -66,10 +73,14 @@ export default class Experience {
 
   handleAudio() {
     if(this.data.play) {
+      gsap.to(this._ui.resume, { y: 0, duration: 0.3, ease: Circ.easeOut } )
+      gsap.to(this._ui.suspend, { y: '-110%', duration: 0.3, ease: Circ.easeOut } )
       this.data.play = false
       this.audio.pause()
       this.world.pause()
     } else {
+      gsap.to(this._ui.resume, { y: '110%', duration: 0.3, ease: Circ.easeOut } )
+      gsap.to(this._ui.suspend, { y: 0, duration: 0.3, ease: Circ.easeOut } )
       this.data.play = true
       this.audio.play()
     }
