@@ -49,7 +49,7 @@ export default class extends Animation {
 			y: 0,
 			rotate: 0,
       opacity: 1,
-			duration: 0.8,
+			duration: 0.7,
 			stagger: 0.03,
 			delay: this.delay ? this.delay : 0,
 			ease: Circ.easeOut
@@ -62,16 +62,16 @@ export default class extends Animation {
     this.enterTl = gsap.timeline()
       .to(this.splitedMainHeader.chars, {
         y: '-130%',
-        rotate: -40,
-        duration: 0.4,
+        rotate: -20,
+        duration: 0.3,
         stagger: { from: "start", each: 0.01 },
-        ease: Circ.easeOut
+        ease: Circ.easeIn
       }).to(this.splitedSubHeader.chars, {
         y: 0,
         rotate: 0,
         duration: 0.4,
         stagger: { from: "start", each: 0.01 },
-        delay: -0.5,
+        delay: -0.25,
         ease: Circ.easeOut
       })
   }
@@ -82,17 +82,17 @@ export default class extends Animation {
     this.leavetl = gsap.timeline()
       .to(this.splitedSubHeader.chars, {
         y: '130%',
-        rotate: 40,
-        duration: 0.4,
-        stagger: { from: "start", each: 0.01 },
-        ease: Circ.easeOut
+        rotate: 20,
+        duration: 0.3,
+        stagger: { from: "end", each: 0.01 },
+        ease: Circ.easeIn
       })
       .to(this.splitedMainHeader.chars, {
         y: 0,
         rotate: 0,
         duration: 0.4,
-        stagger: { from: "start", each: 0.01 },
-        delay: -0.5,
+        stagger: { from: "end", each: 0.01 },
+        delay: -0.25,
         ease: Circ.easeOut
       })
   }

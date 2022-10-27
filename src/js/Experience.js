@@ -55,8 +55,10 @@ export default class Experience {
 	}
 
   startAudio() {
-    gsap.to(this._ui.resume, { y: '110%' } )
-    gsap.to(this._ui.suspend, { y: 0 } )
+    document.addEventListener('keyup', event => event.code === "Space" && this.handleAudio(this))
+
+    gsap.to(this._ui.resume, { y: '115%' } )
+    gsap.to(this._ui.suspend, { y: '5%' } )
     
     setTimeout(() => {      
       this._ui.play.classList.toggle('dft-hide');
@@ -69,27 +71,31 @@ export default class Experience {
       })
       this.data.play = true
     }, 400);
+
+    this._ui.reveal.removeEventListener('click', this.startAudio.bind(this)) 
   }
 
   handleAudio() {
     if(this.data.play) {
-      gsap.to(this._ui.resume, { y: 0, duration: 0.3, ease: Circ.easeOut } )
-      gsap.to(this._ui.suspend, { y: '-110%', duration: 0.3, ease: Circ.easeOut } )
+      gsap.to(this._ui.resume, { y: '5%', duration: 0.3, ease: Circ.easeOut } )
+      gsap.to(this._ui.suspend, { y: '-115%', duration: 0.3, ease: Circ.easeOut } )
       this.data.play = false
       this.audio.pause()
       this.world.pause()
     } else {
-      gsap.to(this._ui.resume, { y: '110%', duration: 0.3, ease: Circ.easeOut } )
-      gsap.to(this._ui.suspend, { y: 0, duration: 0.3, ease: Circ.easeOut } )
+      gsap.to(this._ui.resume, { y: '115%', duration: 0.3, ease: Circ.easeOut } )
+      gsap.to(this._ui.suspend, { y: '5%', duration: 0.3, ease: Circ.easeOut } )
       this.data.play = true
       this.audio.play()
     }
+    this._ui.play.blur()
   }
 
   onBeat() {
     this.data.beat = true
 		if (this.engine) this.engine.onBeat(this.audio)
     if (this.world) this.world.onBeat(this.audio)
+    if (this.engine) this.engine.onBeat(this.audio)
     this.data.beat = false
   }
 
@@ -98,6 +104,8 @@ export default class Experience {
 		if (this.world) this.world.update(this.data.play)
 		if (this.engine) this.engine.update()
 		if (this.debug) this.debug.stats.update()
+
+    // if (this.audio) console.log(this.audio.volume)
 
 		window.requestAnimationFrame(() => {
 			this.update()

@@ -47,11 +47,14 @@ body {
     }
   
     .controls {
-      width: auto;
+      width: 170px;
+      height: 100vh;
       outline: none;
       display: flex;
+      flex-direction: column;
       justify-content: flex-end;
       padding: 1.5rem 1rem;
+      // margin-top: 100%;
     
       &__cta {
         opacity: 0;
@@ -63,8 +66,8 @@ body {
         margin: 0;
         padding: 0;
         // width: auto;
-        width: 110px;
-        height: 20px;
+        width: 170px;
+        height: 30px;
         overflow: hidden;
         text-align: center;
         background: transparent;
@@ -92,20 +95,8 @@ body {
           left: 1rem;
 
           font-family: 'Nineties';
-          font-size: 1.25rem;
-          // transform: translateY(5px);
+          font-size: 2rem;
           top: 0;
-          // bottom: 0;
-
-          // transition: all ease-out 100ms;
-        }
-
-        &__up {
-          // top: -25px;
-        }
-
-        &__down {
-          // bottom: 25px;
         }
 
         .is-active &__up {

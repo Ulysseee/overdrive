@@ -1,4 +1,5 @@
 import { Renderer, Camera, Transform, Orbit, Post, Vec2, Vec3 } from 'ogl'
+import gaps from 'gsap'
 import Experience from './Experience'
 
 import brightPassFragment from '@shaders/post/brightPass.frag'
@@ -14,7 +15,8 @@ export default class Engine {
 		this.sizes = this.Experience.sizes
     this.debug = this.Experience.debug
     this.compositePass = null
-    this.dftStrength = 0
+    this._dftStrength = 0
+    this._dftCamPos = { x: 0, y: -4, z: 120}
 
     this.createRenderer()
     this.createComposer()
@@ -39,6 +41,7 @@ export default class Engine {
 
 	createRenderer() {
     this.renderer = new Renderer();
+    this.renderer.powerPreference = "high-performance"
     this.gl = this.renderer.gl;
     // this.gl.clearColor(1, 1, 1, 1);
     this.gl.canvas.classList.add('webgl')
@@ -58,9 +61,7 @@ export default class Engine {
 
   createCamera () {
     this.camera = new Camera(this.gl, { fov: 50, near: 0.1, far: 500 })
-    this.camera.position.x = 0
-    this.camera.position.y = -4
-    this.camera.position.z = 120
+    this.camera.position.set(this._dftCamPos.x, this._dftCamPos.y, this._dftCamPos.z)
   }
 
   setControls() {
@@ -131,7 +132,14 @@ export default class Engine {
 
   onBeat(audio) {
     const avr = average(audio.values)
+    let camPos = clamp(avr + 1, 1, 1.5)
+
     this.compositePass.uniforms.uBloomStrength.value = avr
+    this.camera.position.set(
+      this._dftCamPos.x,
+      this._dftCamPos.y,
+      lerp( this._dftCamPos.z - 30 * avr, this.camera.position.z, 0.1 )
+    )
   }
 
 	update() {
@@ -139,9 +147,17 @@ export default class Engine {
 
     this.compositePass.uniforms.uBloomStrength.value = lerp(
       clamp(this.compositePass.uniforms.uBloomStrength.value, 0.01, 1),
-      this.dftStrength,
+      this._dftStrength,
       0.05
     )
+
+    this.camera.position.set(
+      lerp( this.camera.position.x, this._dftCamPos.x, 0.1),
+      lerp( this.camera.position.y, this._dftCamPos.y, 0.1),
+      lerp( this.camera.position.z, this._dftCamPos.z, 0.1)
+    )
+
+    // console.log(this.camera.position)
 
     // Disable compositePass pass, so this post will just render the scene for now
     this.compositePass.enabled = false;

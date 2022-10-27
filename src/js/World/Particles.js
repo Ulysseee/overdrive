@@ -32,8 +32,8 @@ export default class Particles {
 
       dftScale: 1,
       dftFrequency: 0.05,
-      // dftFrequency: 0.15,
-      dftAmp: 1
+      dftAmp: 1,
+      dftParticlesScale: 1,
 		}
 	}
 
@@ -54,7 +54,7 @@ export default class Particles {
 		for (let i = 0; i < this._nbParticles; i++) {
       const angle = Math.random() * Math.PI * 2 // Random angle
       // const radius = 15 + Math.random() * 35 // Random radius
-      const radius = Math.random() * 60         // Random radius
+      const radius = Math.random() * 50         // Random radius
       const x = Math.cos(angle) * radius        // Get the x position using cosinus
       const y = Math.sin(angle) * radius        // Get the z position using sinus
 
@@ -94,11 +94,12 @@ export default class Particles {
 
   onBeat(audio) {
     const avr = average(audio.values)
-    console.log(audio.volume)
+    let particleScale = clamp(avr + 1, 1, 1.5)
+    // this.particles.scale.set(particleScale, particleScale, particleScale)
+    
     // this.particlesMat.uniforms.uScale.value = audio.values[2] * 5
     this.particlesMat.uniforms.uScale.value = avr * 5
     if (audio.values[2] > 1) this.particlesMat.uniforms.uFrequency.value = clamp(audio.values[2] / 10, this._data.dftFrequency, 0.1)
-    // this.particlesMat.uniforms.uFrequency.value = audio.values[5] / 10
     this.particlesMat.uniforms.uAmp.value = clamp(audio.volume, this._data.dftAmp, 6)
   }
 
@@ -107,31 +108,28 @@ export default class Particles {
   }
 
 	update(isPlaying) {
+    const { dftParticlesScale, dftFrequency, dftScale, dftAmp } = this._data
+    const { uFrequency, uScale, uAmp } = this.particlesMat.uniforms
     this.particlesMat.uniforms.uTime.value += this.time.delta * 0.001
 
     if (isPlaying) {
-      this.particles.rotation.z -= this.time.delta * 0.0005
+      this.particles.rotation.z -= this.time.delta * 0.0008
       // this.particles.rotation.x -= Math.cos(this.time.delta * 0.0005)
       // this.particles.rotation.x -= Math.sin(this.time.delta * 0.0005)
     }
 
-    // UNIFORMS
-    this.particlesMat.uniforms.uFrequency.value = lerp(
-      this.particlesMat.uniforms.uFrequency.value,
-      this._data.dftFrequency,
-      0.1
+    this.particles.scale.set(
+      lerp( this.particles.scale.x, dftParticlesScale, 0.1),
+      lerp( this.particles.scale.y, dftParticlesScale, 0.1),
+      lerp( this.particles.scale.z, dftParticlesScale, 0.1)
     )
-    this.particlesMat.uniforms.uScale.value = lerp(
-      this.particlesMat.uniforms.uScale.value,
-      this._data.dftScale,
-      0.05
-    )
-    this.particlesMat.uniforms.uAmp.value = lerp(
-      this.particlesMat.uniforms.uAmp.value,
-      this._data.dftAmp,
-      0.04
-    )
-    // console.log(this.particlesMat.uniforms.uAmp.value)
-    // this.particlesMat.uniforms.uScale.value -= this.time.delta * 0.01
+
+    // UPDATE UNIFORMS
+    uFrequency.value = lerp( uFrequency.value, dftFrequency, 0.1 )
+    uScale.value = lerp( uScale.value, dftScale, 0.05 )
+    uAmp.value = lerp( uAmp.value, dftAmp, 0.04 )
+
+    // console.log(uFrequency.value)
+    // console.log(uFrequency.value)
 	}
 }

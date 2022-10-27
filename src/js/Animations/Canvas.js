@@ -1,4 +1,4 @@
-import gsap, { Power3, Circ } from 'gsap'
+import gsap, { Circ } from 'gsap'
 
 import Animation from './Animation.js'
 
@@ -13,9 +13,7 @@ export default class extends Animation {
 	}
 
 	bindUi() {
-		this.ui = {
-
-		}
+		this.ui = {}
 	}
 
 	animateIn() {
@@ -27,7 +25,5 @@ export default class extends Animation {
 		})
 	}
 
-  destroy() {
-
-  }
+  destroy() {}
 }
