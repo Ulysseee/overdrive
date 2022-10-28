@@ -84,7 +84,7 @@ export default class Particles {
     });
 
     this.particles = new Mesh(this.gl, { mode: this.gl.POINTS, geometry: this.geometry, program: this.particlesMat });
-    this.particles.rotation.x -= Math.PI/3
+    this.particles.rotation.x -= Math.PI/6
     this.particles.setParent(this.scene);
 	}
 

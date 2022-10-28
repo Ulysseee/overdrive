@@ -15,7 +15,7 @@ export default class Engine {
     this.debug = this.Experience.debug
     this.compositePass = null
     this._dftStrength = 0
-    this._dftCamPos = { x: 0, y: -4, z: 120}
+    this._dftCamPos = { x: 0, y: -8, z: 120}
 
     this.createRenderer()
     this.createComposer()
@@ -135,7 +135,7 @@ export default class Engine {
     this.camera.position.set(
       this._dftCamPos.x,
       this._dftCamPos.y,
-      lerp( this._dftCamPos.z - 30 * avr, this.camera.position.z, 0.1 )
+      lerp( this._dftCamPos.z - 40 * avr, this.camera.position.z, 0.1 )
     )
   }
 
