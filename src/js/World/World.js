@@ -1,5 +1,4 @@
-import Experience from '../Experience'
-
+import Experience from '@js/Experience'
 import Particles from './Particles'
 
 export default class World {
@@ -12,7 +11,6 @@ export default class World {
 	}
   
   onBeat(audio) {
-    // console.log('beat')
     if (this.particles) this.particles.onBeat(audio)
   }
 
@@ -23,6 +21,4 @@ export default class World {
 	update(isPlaying) {
 		if (this.particles) this.particles.update(isPlaying)
 	}
-
-	destroy() {}
 }

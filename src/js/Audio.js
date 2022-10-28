@@ -1,6 +1,5 @@
 import Experience from "./Experience"
 
-// import {stage, dom} from 'mnf'
 const H_CANVAS = 200
 const MARGIN = 5
 const H_INFO_BAR = 12

@@ -1,5 +1,4 @@
 import { Renderer, Camera, Transform, Orbit, Post, Vec2, Vec3 } from 'ogl'
-import gaps from 'gsap'
 import Experience from './Experience'
 
 import brightPassFragment from '@shaders/post/brightPass.frag'
@@ -24,7 +23,7 @@ export default class Engine {
     this.createScene()
     this.initPasses()
     this.resize()
-    if(this.debug) this.setDebug()
+    if (this.debug) this.setDebug()
 	}
 
   setDebug() {
@@ -43,7 +42,6 @@ export default class Engine {
     this.renderer = new Renderer();
     this.renderer.powerPreference = "high-performance"
     this.gl = this.renderer.gl;
-    // this.gl.clearColor(1, 1, 1, 1);
     this.gl.canvas.classList.add('webgl')
     document.querySelector('#app').appendChild(this.gl.canvas);
  	}
@@ -132,7 +130,6 @@ export default class Engine {
 
   onBeat(audio) {
     const avr = average(audio.values)
-    let camPos = clamp(avr + 1, 1, 1.5)
 
     this.compositePass.uniforms.uBloomStrength.value = avr
     this.camera.position.set(
@@ -156,8 +153,6 @@ export default class Engine {
       lerp( this.camera.position.y, this._dftCamPos.y, 0.1),
       lerp( this.camera.position.z, this._dftCamPos.z, 0.1)
     )
-
-    // console.log(this.camera.position)
 
     // Disable compositePass pass, so this post will just render the scene for now
     this.compositePass.enabled = false;

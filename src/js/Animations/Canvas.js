@@ -24,6 +24,4 @@ export default class extends Animation {
 			ease: Circ.easeOut
 		})
 	}
-
-  destroy() {}
 }

@@ -16,7 +16,7 @@ export default class {
 	onIntersection = async (entries) => {
 		for (const entry of entries) {
 			if (entry.isIntersecting) {
-				await this.animateIn()
+				this.animateIn()
 				this.observer.unobserve(this.element)
 			}
 		}

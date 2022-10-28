@@ -13,7 +13,6 @@ varying float vAmp;
 
 void main() {
   float perlinNoise = pnoise( vPos + uTime * 0.5 );
-  // float noise = pnoise( vec3(vPos.xy * uFrequency, uTime * 0.5 ));
 
   float r = sin((vNoise) * vRandom);
   float g = vNoise;
@@ -36,13 +35,9 @@ void main() {
   strength = step(0.5, strength);
   strength = 1.0 - strength;
 
-  if(strength < .1) {
-    discard;
-  }
+  if(strength < .1) { discard; }
 
   gl_FragColor = vec4(vNoise,vNoise,vNoise, 1.);
-  // gl_FragColor = vec4(-vNoise,-vNoise,-vNoise, 1.);
-  // gl_FragColor = vec4(vec3(vCenter), 1.);
   // gl_FragColor = vec4(color, 1.);
   gl_FragColor = vec4(vColor, 1.);
 }

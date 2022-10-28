@@ -53,17 +53,13 @@ export default class Particles {
 	populateAttributes() {
 		for (let i = 0; i < this._nbParticles; i++) {
       const angle = Math.random() * Math.PI * 2 // Random angle
-      // const radius = 15 + Math.random() * 35 // Random radius
+      // const radius = 15 + Math.random() * 35 // Random radius with offset
       const radius = Math.random() * 50         // Random radius
       const x = Math.cos(angle) * radius        // Get the x position using cosinus
       const y = Math.sin(angle) * radius        // Get the z position using sinus
 
-			const r = 1
-			const g = 1
-			const b = 1
-
       this._data.position.set([x, y, 0], i * 3);
-      this._data.color.set([r, g, b], i * 3);
+      this._data.color.set([1, 1, 1], i * 3);
       this._data.random.set([Math.random()], i * 1);
 		}
 	}
@@ -94,10 +90,7 @@ export default class Particles {
 
   onBeat(audio) {
     const avr = average(audio.values)
-    let particleScale = clamp(avr + 1, 1, 1.5)
-    // this.particles.scale.set(particleScale, particleScale, particleScale)
     
-    // this.particlesMat.uniforms.uScale.value = audio.values[2] * 5
     this.particlesMat.uniforms.uScale.value = avr * 5
     if (audio.values[2] > 1) this.particlesMat.uniforms.uFrequency.value = clamp(audio.values[2] / 10, this._data.dftFrequency, 0.1)
     this.particlesMat.uniforms.uAmp.value = clamp(audio.volume, this._data.dftAmp, 6)
@@ -112,11 +105,7 @@ export default class Particles {
     const { uFrequency, uScale, uAmp } = this.particlesMat.uniforms
     this.particlesMat.uniforms.uTime.value += this.time.delta * 0.001
 
-    if (isPlaying) {
-      this.particles.rotation.z -= this.time.delta * 0.0008
-      // this.particles.rotation.x -= Math.cos(this.time.delta * 0.0005)
-      // this.particles.rotation.x -= Math.sin(this.time.delta * 0.0005)
-    }
+    if (isPlaying) this.particles.rotation.z -= this.time.delta * 0.0008
 
     this.particles.scale.set(
       lerp( this.particles.scale.x, dftParticlesScale, 0.1),
@@ -128,8 +117,5 @@ export default class Particles {
     uFrequency.value = lerp( uFrequency.value, dftFrequency, 0.1 )
     uScale.value = lerp( uScale.value, dftScale, 0.05 )
     uAmp.value = lerp( uAmp.value, dftAmp, 0.04 )
-
-    // console.log(uFrequency.value)
-    // console.log(uFrequency.value)
 	}
 }

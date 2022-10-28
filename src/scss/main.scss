@@ -16,7 +16,6 @@ body {
   #app {
     width: 100vw;
     height: 100vh;
-    // background: #fff;
     background: #000;
   
     .char,
@@ -65,7 +64,6 @@ body {
         border: none;
         margin: 0;
         padding: 0;
-        // width: auto;
         width: 170px;
         height: 30px;
         overflow: hidden;
@@ -90,8 +88,7 @@ body {
           overflow: hidden;
           text-transform: uppercase;
           font-size: 3rem;
-          // color: #000;
-          color: white;
+          color: #fff;
           left: 1rem;
 
           font-family: 'Nineties';
